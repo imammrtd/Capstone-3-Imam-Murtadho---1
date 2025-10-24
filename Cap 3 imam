@@ -1,0 +1,28 @@
+# ...existing code...
+import os
+import streamlit as st
+from dotenv import load_dotenv
+
+load_dotenv()
+
+QDRANT_URL = st.secrets.get("QDRANT_URL") or os.getenv("QDRANT_URL")
+QDRANT_API_KEY = st.secrets.get("QDRANT_API_KEY") or os.getenv("QDRANT_API_KEY")
+OPENAI_API_KEY = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
+
+try:
+    # canonical langchain imports (compatible with many versions)
+    from langchain.chat_models import ChatOpenAI
+    from langchain.embeddings import OpenAIEmbeddings
+    from langchain.vectorstores import Qdrant
+    from langchain.tools import tool
+    # langgraph / ToolMessage APIs may differ by version; import guarded:
+    from langgraph.prebuilt import create_react_agent
+    try:
+        from langchain.schema import ToolMessage
+    except Exception:
+        # fallback if ToolMessage lives elsewhere or is not present
+        ToolMessage = None
+except Exception as e:
+    st.error(f"Import error: {e}")
+    raise
+# ...existing code...
